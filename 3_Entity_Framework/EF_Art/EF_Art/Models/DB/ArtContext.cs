@@ -89,7 +89,7 @@ public partial class ArtContext : DbContext
         {
             entity.HasKey(e => e.IdMuseum);
 
-            entity.ToTable("Museum")
+            entity.ToTable("Museum");
 
             entity.Property(e => e.IdMuseum).HasColumnName("Id_Museum");
             entity.Property(e => e.City)
