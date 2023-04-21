@@ -7,13 +7,17 @@ namespace TestDatabaseAdoNet.Repositories;
 
 public interface IArtistRepository
 {
-    public List<Query2> ExecuteQuery2();
+    public Result<Query2> ExecuteQuery2();
 }
 public class ArtistRepository : IArtistRepository
 {
-    public List<Query2> ExecuteQuery2()
+    private string QueryTwoMessage() => "Scrivere una query per recuperare i nomi degli artisti, opere di quali sono conservate a Parigi";
+
+    public Result<Query2> ExecuteQuery2()
     {
-        List<Query2>? query = new List<Query2>();
+
+        Result<Query2>? result = new();
+        result.QueryRequest = QueryTwoMessage();
 
         try
         {
@@ -24,7 +28,7 @@ public class ArtistRepository : IArtistRepository
             while (reader.Read())
             {
 
-                query.Add(new Models.Query2()
+                result.Data!.Add(new Models.Query2()
                 {
                     Nome = reader.GetString(0)
                 });
@@ -33,16 +37,16 @@ public class ArtistRepository : IArtistRepository
 
         catch (SqlException ex)
         {
-            Console.WriteLine(ex.Message);
-            return query;
+            result.Error = ex.Message;
+            return result;
         }
 
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-            return query;
+            result.Error = ex.Message;
+            return result;
         }
 
-        return query;
+        return result;
     }
 }

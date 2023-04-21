@@ -10,8 +10,7 @@ public static class JsonExtension
         Console.WriteLine(resultJson);
 
         // Modo veloce e pigro per creare due linee vuote
-        Console.WriteLine();
-        Console.WriteLine();
+
     }
 
 }

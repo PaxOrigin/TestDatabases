@@ -15,34 +15,13 @@ public class Program
         IMuseumRepository museumRepository = new MuseumRepository();
 
         var resultQuery1 = artworkRepository.ExecuteQuery1();
-        if (resultQuery1 is null)
-        {
-            Console.WriteLine("Nessun Risultato trovato");
-        }
-        else
-        {
-            ResultsViewer.PrintResult<List<Query1>>(resultQuery1);
-        }
+        ResultsViewer.PrintResult<Query1>(resultQuery1);
 
         var resultQuery2 = artistRepository.ExecuteQuery2();
-        if (resultQuery2 is null)
-        {
-            Console.WriteLine("Nessun Risultato trovato");
-        }
-        else
-        {
-            ResultsViewer.PrintResult<List<Query2>>(resultQuery2);
-        }
+        ResultsViewer.PrintResult<Query2>(resultQuery2);
 
         var resultQuery3 = museumRepository.ExecuteQuery3();
-        if (resultQuery3 is null)
-        {
-            Console.WriteLine("Nessun Risultato trovato");
-        }
-        else
-        {
-            ResultsViewer.PrintResult<List<Query3>>(resultQuery3);
-        }
+        ResultsViewer.PrintResult<Query3>(resultQuery3);
 
 
     }

@@ -2,6 +2,11 @@
 
 public class Result<T>
 {
+    public Result()
+    {
+        Data = new List<T>();
+        QueryRequest = "";
+    }
 
     public List<T>? Data { get; set; }
     public string QueryRequest { get; set; } = null!;

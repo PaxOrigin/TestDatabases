@@ -2,24 +2,21 @@
 
 using Microsoft.Data.SqlClient;
 
-using System.Data;
-
 using TestDatabaseAdoNet.Models;
 
 public interface IArtworkRepository
 {
-    public List<Query1> ExecuteQuery1();
+    public Result<Query1> ExecuteQuery1();
 }
 
 public class ArtworkRepository : IArtworkRepository
 {
     private string QueryOneMessage() => "Scrivere una query \"select\" per recuperare la lista contenete: museo, nome opera, nome \r\npersonaggio degli artisti italiani";
-    public List<Query1> ExecuteQuery1()
+    public Result<Query1> ExecuteQuery1()
     {
         Result<Query1> result = new();
-        result.Data = new List<Query1>();
         result.QueryRequest = QueryOneMessage();
-        List<Query1>? query = new List<Query1>();
+
 
         try
         {
@@ -29,23 +26,14 @@ public class ArtworkRepository : IArtworkRepository
             using var reader = command.ExecuteReader();
             while (reader?.Read() == true)
             {
-                var museumName = reader.GetString("Nome Museo");
-                var artworkName = reader.GetString("Nome Opera");
-                string characterName;
-                if (reader.IsDBNull("Nome Personaggio"))
-                {
-                    characterName = "null";
-                }
-                else
-                {
-                    characterName = reader.GetString("Nome Personaggio");
-                }
 
-                query.Add(new Models.Query1()
+
+                result.Data!.Add(new Models.Query1()
                 {
-                    MuseumName = museumName,
-                    ArtworkName = artworkName,
-                    CharacterName = characterName
+                    MuseumName = reader.GetString(0),
+                    ArtworkName = reader.GetString(1),
+                    CharacterName = reader.IsDBNull(2) ? "null"
+                                    : reader.GetString(2)
                 });
             }
         }
@@ -53,15 +41,15 @@ public class ArtworkRepository : IArtworkRepository
         catch (SqlException ex)
         {
             result.Error = ex.Message;
-            return query;
+            return result;
         }
 
         catch (Exception ex)
         {
             result.Error = ex.Message;
-            return query;
+            return result;
         }
 
-        return query;
+        return result;
     }
 }

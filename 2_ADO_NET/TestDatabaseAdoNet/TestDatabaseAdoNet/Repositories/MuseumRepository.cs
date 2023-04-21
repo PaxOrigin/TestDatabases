@@ -6,13 +6,17 @@ namespace TestDatabaseAdoNet.Repositories;
 
 public interface IMuseumRepository
 {
-    public List<Query3> ExecuteQuery3();
+    public Result<Query3> ExecuteQuery3();
 }
 public class MuseumRepository : IMuseumRepository
 {
-    public List<Query3> ExecuteQuery3()
+    private string QueryThreeMessage() => "Scrivere una query “select” per recuperare la città in quale è conservato quadro \"Flora\"";
+
+    public Result<Query3> ExecuteQuery3()
     {
-        List<Query3>? query = new List<Query3>();
+        Result<Query3>? result = new Result<Query3>();
+        result.QueryRequest = QueryThreeMessage();
+
 
         try
         {
@@ -23,7 +27,7 @@ public class MuseumRepository : IMuseumRepository
             while (reader.Read())
             {
 
-                query.Add(new Models.Query3()
+                result.Data.Add(new Models.Query3()
                 {
                     City = reader.GetString(0)
                 });
@@ -32,16 +36,16 @@ public class MuseumRepository : IMuseumRepository
 
         catch (SqlException ex)
         {
-            Console.WriteLine(ex.Message);
-            return query;
+            result.Error = ex.Message;
+            return result;
         }
 
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-            return query;
+            result.Error = ex.Message;
+            return result;
         }
 
-        return query;
+        return result;
     }
 }
