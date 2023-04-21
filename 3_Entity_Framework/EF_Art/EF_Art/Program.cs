@@ -3,13 +3,25 @@ using EF_Art.Repositories;
 
 namespace EF_Art
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            IArtworkRepository artworkRepository = new ArtworkRepository();
             var db = new ArtContext();
-            Console.WriteLine(artworkRepository.ExecuteQuery1(db));
+            IArtworkRepository _artworkRepository = new ArtworkRepository(db);
+            IMuseumRepository _museumRepository = new MuseumRepository(db);
+            IArtistRepository _artistRepository = new ArtistRepository(db);
+
+
+            var query1Result = _artworkRepository.ExecuteQuery1();
+            PrintJson.PrintResults(query1Result);
+
+            var query2Result = _artistRepository.ExecuteQuery2("Parigi");
+            PrintJson.PrintResults(query2Result);
+
+            var query3Result = _museumRepository.ExecuteQuery3("Flora");
+            PrintJson.PrintResults(query3Result);
+
 
         }
     }

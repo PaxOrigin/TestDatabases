@@ -2,22 +2,30 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Newtonsoft.Json;
-
 namespace EF_Art.Repositories;
 
 public interface IArtworkRepository
 {
-    public string ExecuteQuery1(ArtContext db);
+    public Result<object> ExecuteQuery1();
 }
 public class ArtworkRepository : IArtworkRepository
 {
-    public string ExecuteQuery1(ArtContext db)
+    private string QueryOneText() => "Scrivere una query \"select\" per recuperare la lista contenete: museo, nome opera, nome \r\npersonaggio degli artisti italiani";
+
+    private ArtContext _db;
+
+    public ArtworkRepository(ArtContext db)
     {
-        string? result;
+        _db = db;
+    }
+
+    public Result<object> ExecuteQuery1()
+    {
+        Result<object> result = new Result<object>();
+        result.QueryRequest = QueryOneText();
         try
         {
-            var resultNotJson = db.Artworks
+            result.Data!.AddRange(_db.Artworks
                 .Include(p => p.IdMuseumNavigation)
                 .Include(d => d.IdArtistNavigation)
                 .Include(g => g.IdCharacterNavigation)
@@ -25,17 +33,17 @@ public class ArtworkRepository : IArtworkRepository
                 .Select(p => new
                 {
                     MuseumName = p.IdMuseumNavigation.MuseumName,
-                    ArtworkName = p.Name,
-                    CharacterName = p.IdCharacterNavigation.Name
-                }).ToList();
+                    ArtistName = p.Name,
+                    CharacterName = p.IdCharacterNavigation.Name ?? "Null"
+                }
+                ));
 
-            result = JsonConvert.SerializeObject(resultNotJson, Formatting.Indented);
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-            return null;
+            result.Error = ex.Message;
+            return result;
         }
         return result;
     }
